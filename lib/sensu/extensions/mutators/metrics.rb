@@ -128,6 +128,9 @@ module Sensu::Extension
 
       metrics.split("\n").each do |output_line|
         (metric_name, metric_value, epoch_time) = output_line.split
+        # Sometimes checks outputthings we don't want or expect.
+        # Only attempt to parse things that look like they might make sense.
+        next unless metric_name && metric_value && epoch_time
         metric_value = metric_value.rstrip
         # attempt to strip complete hostname from the beginning, otherwise
         # passthrough metric name as-is

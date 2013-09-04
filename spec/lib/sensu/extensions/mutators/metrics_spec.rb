@@ -6,6 +6,10 @@ describe 'Sensu::Extension::Metrics' do
     Wizardvan::Test::Fixtures::GRAPHITE_EVENT
   end
 
+  let(:bad_graphite_event) do
+    Wizardvan::Test::Fixtures::BAD_GRAPHITE_EVENT
+  end
+
   let(:opentsdb_event) do
     Wizardvan::Test::Fixtures::OPENTSDB_EVENT
   end
@@ -55,6 +59,12 @@ describe 'Sensu::Extension::Metrics' do
   it 'passes metrics through for graphite' do
     @mutator.run(graphite_event) do |output, status|
       output[:graphite].should == graphite_event[:check][:output]
+    end
+  end
+
+  it 'should ignore malformed lines in graphite events when mutating for opentsdb' do
+    @mutator.run(bad_graphite_event) do |output, status|
+      output[:opentsdb].should_not match(/bad/)
     end
   end
 

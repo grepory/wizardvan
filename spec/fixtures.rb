@@ -11,6 +11,7 @@ end
 module Wizardvan::Test
   module Fixtures
 
+    BAD_GRAPHITE_EVENT = load_json(fixture('events/bad_graphite.json'))
     GRAPHITE_EVENT = load_json(fixture('events/graphite.json'))
     OPENTSDB_EVENT = load_json(fixture('events/opentsdb.json'))
     JSON_EVENT = load_json(fixture('events/json.json'))
