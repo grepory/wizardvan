@@ -1,0 +1,1 @@
+{"client":{"name":"hostname"},"check":{"output":"hostname.metric_name\tvalue\t1375226329\n"}}

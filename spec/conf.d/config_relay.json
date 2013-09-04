@@ -1,0 +1,4 @@
+{ "relay": {
+  "graphite": { "host": "127.0.0.1", "port": 31337 },
+  "opentsdb": { "host": "127.0.0.1", "port": 31336 }
+}}

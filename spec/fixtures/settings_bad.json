@@ -1,0 +1,1 @@
+{"handlers":{"relay":{"graphite":{"host":"graphite","port":1234},"opentsdb":{"host":"opentsdb","port":5678},"nonexistent":{}}}}

@@ -1,0 +1,12 @@
+LineLength:
+  Enabled: true
+  Max: 128
+
+Encoding:
+  Enabled: false
+
+CaseIndentation:
+  Enabled: false
+
+MethodLength:
+  Enabled: false

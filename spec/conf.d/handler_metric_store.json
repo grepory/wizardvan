@@ -1,0 +1,8 @@
+{
+  "handlers": {
+    "metric_store": {
+      "type": "set",
+      "handlers": [ "relay" ]
+    }
+  }
+}

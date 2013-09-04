@@ -1,0 +1,1 @@
+{"client":{"name":"hostname"},"check":{"output_type":"opentsdb","output":"metric_name 1375226329 value\n"}}

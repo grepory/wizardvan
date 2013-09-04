@@ -1,0 +1,17 @@
+{
+  "type": "metric",
+  "name": "check name",
+  "handler": "metric_store",
+  "status": 0,
+  "output_type": "json",
+  "auto_tag_host": "yes",
+  "output": "{
+    \"name\": \"metric_name\",
+    \"value\": 1,
+    \"timestamp\": 1365624303,
+    \"tags\": {
+      \"service\": \"some_service\",
+      \"some_tag\": \"some_value\"
+    }
+  }"
+}
