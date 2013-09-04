@@ -1,6 +1,6 @@
 # WizardVan: A Sensu Metrics Relay
 
-[![Coverage Status](https://coveralls.io/repos/opower/sensu-metrics-relay/badge.png?branch=oss_review)](https://coveralls.io/r/opower/sensu-metrics-relay?branch=oss\_review) [![Build Status](https://travis-ci.org/opower/sensu-metrics-relay.png?branch=master)](https://travis-ci.org/opower/sensu-metrics-relay)
+[![Coverage Status](https://coveralls.io/repos/opower/sensu-metrics-relay/badge.png?branch=master)](https://coveralls.io/r/opower/sensu-metrics-relay?branch=master) [![Build Status](https://travis-ci.org/opower/sensu-metrics-relay.png?branch=master)](https://travis-ci.org/opower/sensu-metrics-relay)
 
 
 WizardVan uses a combination of a handler and a metric extension to open
