@@ -30,6 +30,10 @@ describe 'Sensu::Extension::Metrics' do
     Wizardvan::Test::Fixtures::SETTINGS_BAD
   end
 
+  let(:empty_event) do
+    Wizardvan::Test::Fixtures::EMPTY_EVENT
+  end
+
   before(:all) do
     extensions = Sensu::Extensions.new
     extensions.require_directory(
@@ -53,6 +57,14 @@ describe 'Sensu::Extension::Metrics' do
   it 'successfully returns endpoints hash when configured' do
     @mutator.run(graphite_event) do |output, status|
       output.should be_an_instance_of(Hash)
+    end
+  end
+
+  it 'does nothing for empty metrics' do
+    @mutator.run(empty_event) do |output, status|
+      status.should == 0
+      output[:graphite].should == ""
+      output[:opentsdb].should == ""
     end
   end
 

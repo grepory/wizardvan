@@ -208,7 +208,7 @@ module Sensu::Extension
       begin
         event_data.keys.each do |ep_name|
           logger.debug("relay.run() handling endpoint: #{ep_name}")
-          @endpoints[ep_name].relay_event(event_data[ep_name])
+          @endpoints[ep_name].relay_event(event_data[ep_name]) unless event_data[ep_name].empty?
         end
       rescue => error
         yield(error.to_s, 2)

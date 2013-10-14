@@ -13,6 +13,7 @@ module Wizardvan::Test
 
     BAD_GRAPHITE_EVENT = load_json(fixture('events/bad_graphite.json'))
     GRAPHITE_EVENT = load_json(fixture('events/graphite.json'))
+    EMPTY_EVENT = load_json(fixture('events/empty.json'))
     OPENTSDB_EVENT = load_json(fixture('events/opentsdb.json'))
     JSON_EVENT = load_json(fixture('events/json.json'))
     JSON_EVENT_WITH_NAME = load_json(fixture('events/json_withname.json'))
