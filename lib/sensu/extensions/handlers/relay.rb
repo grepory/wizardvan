@@ -133,7 +133,7 @@ module Sensu::Extension
     def queue_length
       @queue
         .map(&:bytesize)
-        .reduce(:+)
+        .reduce(:+) || 0
     end
 
     def flush_to_net
