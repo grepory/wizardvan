@@ -17,7 +17,7 @@ metric stores.
   gem.require_paths = ['lib']
   gem.version       = Wizardvan::VERSION
 
-  gem.add_dependency('sensu', '0.11.0.beta')
+  gem.add_dependency('sensu', '0.12.1')
 
   # development dependencies
   gem.add_development_dependency('rspec', '~> 2.13.0')

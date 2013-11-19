@@ -106,13 +106,13 @@ describe 'Sensu::Extension::Metrics' do
 
   it 'mutates json to opentsdb' do
     @mutator.run(json_event) do |output, status|
-      output[:opentsdb].should == "put metric_name 0 value host=hostname\n"
+      output[:opentsdb].should == "put metric_name 0 value host=hostname tag=tag tag2=tag2\n"
     end
   end
 
   it 'mutates json to opentsdb and includes name if it exists' do
     @mutator.run(json_event_with_name) do |output, status|
-      output[:opentsdb].should == "put metric_name 0 value check_name=check_name host=hostname\n"
+      output[:opentsdb].should == "put metric_name 0 value check_name=check_name host=hostname tag=tag tag2=tag2\n"
     end
   end
 
