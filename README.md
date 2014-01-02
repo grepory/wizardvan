@@ -44,16 +44,14 @@ config\_relay.json:
 
 ```json
 {
-  "handlers": {
-    "relay": {
-        "graphite": { 
-            "host": "127.0.0.1",
-            "port": 60000
-        },
-        "opentsdb": {
-            "host": "127.0.0.1",
-            "port": 4424
-        }
+  "relay": {
+    "graphite": { 
+        "host": "127.0.0.1",
+        "port": 60000
+    },
+    "opentsdb": {
+        "host": "127.0.0.1",
+        "port": 4424
     }
   }
 }
