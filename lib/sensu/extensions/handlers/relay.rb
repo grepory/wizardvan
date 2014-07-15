@@ -73,6 +73,11 @@ module Sensu::Extension
       super(*args)
     end
 
+    # Override EM::Connection.receive_data to prevent it from calling
+    # puts and randomly logging non-sense to sensu-server.log
+    def receive_data(data)
+    end
+
     # Reconnect normally attempts to connect at the end of the tick
     # Delay the reconnect for some seconds.
     def reconnect(time)
