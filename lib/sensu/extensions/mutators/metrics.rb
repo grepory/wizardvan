@@ -120,7 +120,7 @@ module Sensu::Extension
       out << " host=#{@event[:client][:name]}" unless check[:auto_tag_host] == 'no'
       metric['tags'].each do |tag, value|
         out << " " << [tag, value].join('=')
-      end
+      end if metric.key?('tags')
       out << "\n"
     end
 

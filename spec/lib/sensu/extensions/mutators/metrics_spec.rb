@@ -123,4 +123,9 @@ describe 'Sensu::Extension::Metrics' do
     end
   end
 
+  it 'does not require tags' do
+    @mutator.run(opentsdb_event) do |output, status|
+      output[:opentsdb].should == opentsdb_event[:check][:output]
+    end
+  end
 end
