@@ -225,7 +225,7 @@ module Sensu::Extension
       @endpoints.each_value do |ep|
         ep.stop
       end
-      yield
+      yield if block_given?
     end
 
     def logger
