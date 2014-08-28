@@ -100,13 +100,13 @@ describe 'Sensu::Extension::Metrics' do
 
   it 'mutates json to graphite' do
     @mutator.run(json_event) do |output, status|
-      output[:graphite].should == "hostname.metric_name\tvalue\t0\n"
+      output[:graphite].should == "com.example.hostname.metric_name\tvalue\t0\n"
     end
   end
 
   it 'mutates json to opentsdb' do
     @mutator.run(json_event) do |output, status|
-      output[:opentsdb].should == "put metric_name 0 value host=hostname tag=tag tag2=tag2\n"
+      output[:opentsdb].should == "put metric_name 0 value host=hostname.example.com tag=tag tag2=tag2\n"
     end
   end
 
