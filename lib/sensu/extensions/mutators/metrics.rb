@@ -108,7 +108,7 @@ module Sensu::Extension
 
     def graphite(metric)
       out = ''
-      out << "#{@event[:client][:name]}." unless @event[:check][:auto_tag_host] == 'no'
+      out << "#{@event[:client][:name].split(/\./).reverse.join('.')}." unless @event[:check][:auto_tag_host] == 'no'
       out << "#{metric['name']}\t#{metric['value']}\t#{metric['timestamp']}\n"
       out
     end
