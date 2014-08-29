@@ -57,6 +57,9 @@ config\_relay.json:
 }
 ```
 
+The metrics relay uses the plaintext protocol for Graphite and OpenTSDB's RPC protocol
+for transmitting metrics. Be sure to configure accordingly.
+
 The behavior of the mutator and handler is heavily influenced by several configuration
 options. The mutator introduces the concept of "output_type". By default, the extension
 assumes an "output_type" of "graphite." If your metrics are outputting anything besides
@@ -77,7 +80,7 @@ For example, if you have a metric check that outputs opentsdb:
         "output_type": "opentsdb",
         "auto_tag_host": "yes",
         "type": "metric",
-        "handler": [ "relay" ],
+        "handlers": [ "relay" ],
         "command": "/path/to/opentsdb_metric.rb"
     }
 }
