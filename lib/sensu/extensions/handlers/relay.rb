@@ -123,7 +123,7 @@ module Sensu::Extension
 
     attr_accessor :connection, :queue
 
-    def initialize(name, host, port)
+    def initialize(name, host, port, queue_size = MAX_QUEUE_SIZE)
       @queue = []
       @connection = EM.connect(host, port, RelayConnectionHandler)
       @connection.name = name
@@ -187,7 +187,8 @@ module Sensu::Extension
         @endpoints[ep_name] = Endpoint.new(
           ep_name,
           ep_settings['host'],
-          ep_settings['port']
+          ep_settings['port'],
+          ep_settings['max_queue_size']
         )
       end
     end
