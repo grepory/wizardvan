@@ -121,17 +121,21 @@ module Sensu::Extension
     # space of a single loop tick.
     MAX_QUEUE_SIZE = 16384
 
-    attr_accessor :connection, :queue
+    attr_accessor :connection, :queue, :max_queue_size
 
-    def initialize(name, host, port)
+    def initialize(name, host, port, queue_size = nil)
+      if queue_size.nil?
+         queue_size = MAX_QUEUE_SIZE
+      end
       @queue = []
       @connection = EM.connect(host, port, RelayConnectionHandler)
       @connection.name = name
       @connection.host = host
       @connection.port = port
       @connection.message_queue = @queue
+      @max_queue_size = queue_size
       EventMachine::PeriodicTimer.new(60) do
-        Sensu::Logger.get.info("relay queue size for #{name}: #{queue_length}")
+        Sensu::Logger.get.info("relay queue size for #{name}: #{queue_length} of #{max_queue_size}")
       end
     end
 
@@ -149,7 +153,7 @@ module Sensu::Extension
     def relay_event(data)
       if @connection.connected
         @queue << data
-        if queue_length >= MAX_QUEUE_SIZE
+        if queue_length >= @max_queue_size
           flush_to_net
           Sensu::Logger.get.debug('relay.flush_to_net: successfully flushed to network')
         end
@@ -187,7 +191,8 @@ module Sensu::Extension
         @endpoints[ep_name] = Endpoint.new(
           ep_name,
           ep_settings['host'],
-          ep_settings['port']
+          ep_settings['port'],
+          ep_settings['max_queue_size']
         )
       end
     end
