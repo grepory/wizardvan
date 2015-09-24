@@ -1,6 +1,6 @@
 # WizardVan: A Sensu Metrics Relay
 
-[![Coverage Status](https://coveralls.io/repos/opower/sensu-metrics-relay/badge.png?branch=master)](https://coveralls.io/r/opower/sensu-metrics-relay?branch=master) [![Build Status](https://travis-ci.org/opower/sensu-metrics-relay.png?branch=master)](https://travis-ci.org/opower/sensu-metrics-relay)
+[![Coverage Status](https://coveralls.io/repos/opower/sensu-metrics-relay/badge.png?branch=master)](https://coveralls.io/r/opower/sensu-metrics-relay?branch=master) [![Build Status](https://travis-ci.org/grepory/wizardvan.svg)](https://travis-ci.org/grepory/wizardvan)
 
 
 WizardVan uses a combination of a handler and a metric extension to open
@@ -51,7 +51,8 @@ config\_relay.json:
     },
     "opentsdb": {
         "host": "127.0.0.1",
-        "port": 4424
+        "port": 4424,
+        "max_queue_size": 0,
     }
   }
 }
@@ -92,6 +93,11 @@ In the configuration example above, you will notice that we define graphite and 
 back-ends. The relay currently includes functionality to mutate between graphite and opentsdb.
 So, if you are submitting graphite metrics and define an opentsdb backend in config_relay.json,
 then it will automatically mutate from graphite to opentsdb and submit metrics to opentsdb.
+
+An optional `max_queue_size` parameter may be passed to an endpoint that will control the size
+of the buffer used to hold metrics until they are flushed to the network. It's recommended not
+to increase this beyond 16384--as this is the amount of data that EventMachine will write to the
+network in a single tick.
 
 ## JSON Metric format
 

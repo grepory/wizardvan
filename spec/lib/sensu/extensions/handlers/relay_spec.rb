@@ -81,6 +81,12 @@ describe Sensu::Extension::Endpoint do
     async_done
   end
 
+  it 'flushes the queue after every write if the queue length is 0' do
+    @endpoint.max_queue_size = 0
+    @endpoint.relay_event('test')
+    @endpoint.queue_length.should eq(0)
+    async_done
+  end
 end
 
 describe ExponentialDecayTimer do
