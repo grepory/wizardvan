@@ -32,7 +32,7 @@ have to to add "output\_type": "opentsdb" or "json" to your check definitions.
 As root:
 
 1. cp -R lib/sensu/extensions/\* /etc/sensu/extensions
-2. cp config\_relay.json /etc/sensu/conf.d 
+2. cp config\_relay.json /etc/sensu/conf.d
 3. Edit the values in config\_relay.json according to your environment.
 4. Restart sensu-server
 
@@ -45,9 +45,10 @@ config\_relay.json:
 ```json
 {
   "relay": {
-    "graphite": { 
+    "graphite": {
         "host": "127.0.0.1",
-        "port": 60000
+        "port": 60000,
+        "max_queue_size": 16384 # optional
     },
     "opentsdb": {
         "host": "127.0.0.1",
