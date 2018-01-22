@@ -121,9 +121,10 @@ module Sensu::Extension
     # space of a single loop tick.
     MAX_QUEUE_SIZE = 16384
 
-    attr_accessor :connection, :queue
+    attr_accessor :connection, :queue, :max_queue_size
 
-    def initialize(name, host, port, api_key, queue_size = MAX_QUEUE_SIZE)
+    def initialize(name, host, port, api_key, max_queue_size = MAX_QUEUE_SIZE)
+      @max_queue_size = max_queue_size
       @queue = []
       @connection = EM.connect(host, port, RelayConnectionHandler)
       @connection.name = name
@@ -132,7 +133,7 @@ module Sensu::Extension
       @connection.api_key = api_key
       @connection.message_queue = @queue
       EventMachine::PeriodicTimer.new(60) do
-        Sensu::Logger.get.info("relay queue size for #{name}: #{queue_length}")
+        Sensu::Logger.get.info("relay queue size for #{name}: #{@queue_length} of #{max_queue_size}")
       end
     end
 
@@ -153,9 +154,9 @@ module Sensu::Extension
         # Prepend the api key to the request
         # See - https://www.hostedgraphite.com/docs/#getting-started-with-hosted-graphite
         queue << if @api_key.nil?
-          data.to_s
-        else
-          "#{@connection.api_key}.#{data}"
+                   data.to_s
+                 else
+                   "#{@connection.api_key}.#{data}"
                  end
 
         # Only send metrics which match our metric format
@@ -166,7 +167,7 @@ module Sensu::Extension
         else
           Sensu::Logger.get.warn("Metric not sent: #{data}")
         end
-        if queue_length >= MAX_QUEUE_SIZE
+        if queue_length >= @max_queue_size
           flush_to_net
           Sensu::Logger.get.debug('relay.flush_to_net: successfully flushed to network')
         end
