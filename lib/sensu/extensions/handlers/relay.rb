@@ -11,7 +11,7 @@ class ExponentialDecayTimer
 
   def get_reconnect_time(max_reconnect_time, connection_attempt_count)
     if @reconnect_time < max_reconnect_time
-      seconds = @reconnect_time + (2**(connection_attempt_count - 1))
+      seconds = @reconnect_time + (2 ** (connection_attempt_count - 1))
       seconds = seconds * (0.5 * (1.0 + rand))
       @reconnect_time = if seconds <= max_reconnect_time
                           seconds
@@ -33,7 +33,7 @@ module Sensu::Extension
     MAX_RECONNECT_TIME = 300 # seconds
 
     attr_accessor :message_queue, :connection_pool
-    attr_accessor :name, :host, :port, :connected
+    attr_accessor :name, :host, :port, :api_key, :connected
     attr_accessor :reconnect_timer
 
     # ignore :reek:TooManyStatements
@@ -89,8 +89,8 @@ module Sensu::Extension
 
     def get_reconnect_time
       @reconnect_timer.get_reconnect_time(
-        @max_reconnect_time,
-        @connection_attempt_count
+          @max_reconnect_time,
+          @connection_attempt_count
       )
     end
 
@@ -98,7 +98,7 @@ module Sensu::Extension
       unless @connected
         @connection_attempt_count += 1
         reconnect_time = get_reconnect_time
-        logger.info("Scheduling reconnect in #{@reconnect_time} seconds for relay channel: #{@name}.")
+        logger.info("Scheduling reconnect in #{reconnect_time} seconds for relay channel: #{@name}.")
         reconnect(reconnect_time)
       end
       reconnect_time
@@ -121,25 +121,25 @@ module Sensu::Extension
     # space of a single loop tick.
     MAX_QUEUE_SIZE = 16384
 
-    attr_accessor :connection, :queue, :max_queue_size
+    attr_accessor :connection, :queue
 
-    def initialize(name, host, port, max_queue_size = MAX_QUEUE_SIZE)
-      @max_queue_size = max_queue_size
+    def initialize(name, host, port, api_key, queue_size = MAX_QUEUE_SIZE)
       @queue = []
       @connection = EM.connect(host, port, RelayConnectionHandler)
       @connection.name = name
       @connection.host = host
       @connection.port = port
+      @connection.api_key = api_key
       @connection.message_queue = @queue
       EventMachine::PeriodicTimer.new(60) do
-        Sensu::Logger.get.info("relay queue size for #{name}: #{queue_length} of #{max_queue_size}")
+        Sensu::Logger.get.info("relay queue size for #{name}: #{queue_length}")
       end
     end
 
     def queue_length
       @queue
-        .map(&:bytesize)
-        .reduce(:+) || 0
+          .map(&:bytesize)
+          .reduce(:+) || 0
     end
 
     def flush_to_net
@@ -149,8 +149,24 @@ module Sensu::Extension
 
     def relay_event(data)
       if @connection.connected
-        @queue << data
-        if queue_length >= @max_queue_size
+
+        # Prepend the api key to the request
+        # See - https://www.hostedgraphite.com/docs/#getting-started-with-hosted-graphite
+        queue << if @api_key.nil?
+          data.to_s
+        else
+          "#{@connection.api_key}.#{data}"
+                 end
+
+        # Only send metrics which match our metric format
+        # Ex. metric_name metric_output metric_timestamp'
+        # Otherwise the entire set of metrics will be dropped and we won't know why
+        if /\S+\s\S+\s\d+/.match(data)
+          @queue << queue
+        else
+          Sensu::Logger.get.warn("Metric not sent: #{data}")
+        end
+        if queue_length >= MAX_QUEUE_SIZE
           flush_to_net
           Sensu::Logger.get.debug('relay.flush_to_net: successfully flushed to network')
         end
@@ -176,7 +192,7 @@ module Sensu::Extension
 
     def initialize
       super
-      @endpoints = { }
+      @endpoints = {}
       @initialized = false
     end
 
@@ -186,19 +202,20 @@ module Sensu::Extension
         ep_name = endpoint_name.intern
         ep_settings = @settings[:relay][ep_name]
         @endpoints[ep_name] = Endpoint.new(
-          ep_name,
-          ep_settings['host'],
-          ep_settings['port'],
-          ep_settings['max_queue_size']
+            ep_name,
+            ep_settings['host'],
+            ep_settings['port'],
+            ep_settings['api_key'],
+            ep_settings['max_queue_size']
         )
       end
     end
 
     def definition
       {
-        type: 'extension',
-        name: 'relay',
-        mutator: 'metrics',
+          type: 'extension',
+          name: 'relay',
+          mutator: 'metrics',
       }
     end
 
@@ -224,9 +241,7 @@ module Sensu::Extension
     end
 
     def stop
-      @endpoints.each_value do |ep|
-        ep.stop
-      end
+      @endpoints.each_value(&:stop)
       yield if block_given?
     end
 
